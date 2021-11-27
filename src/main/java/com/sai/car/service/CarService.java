@@ -28,7 +28,12 @@ public class CarService {
 	}
 
 	public Car addCarDetails(String name, String type) {
-		Car car = carRepository.save(new Car(name, type));
+		Car car = new Car(name, type);
+		car.setTransmissionType("Manual");
+		car.setEngineType("v8");
+		car.setAirBags(false);
+
+		car = carRepository.save(car);
 		if (car.getName() != null)
 			return car;
 		else
@@ -69,7 +74,8 @@ public class CarService {
 			cars.add(car);
 		});
 
-		Optional<List<Car>> carsOption = carRepository.addMultipleCarsDetails(cars);
+		List<Car> carList = carRepository.saveAll(cars);
+		Optional<List<Car>> carsOption = Optional.of(carList);
 		if (carsOption.isPresent() && carsOption.get().size() > 0)
 			return carsOption.get();
 		else
