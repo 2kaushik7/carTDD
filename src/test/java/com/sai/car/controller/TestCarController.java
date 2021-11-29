@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sai.car.exceptions.CarNotFoundException;
 import com.sai.car.model.Car;
 import com.sai.car.model.CarRequest;
+import com.sai.car.model.UsrDtlsRq;
 import com.sai.car.service.CarService;
 
 @ExtendWith(SpringExtension.class)
@@ -34,6 +35,8 @@ public class TestCarController {
 
 	@MockBean
 	CarService carService;
+
+	private ObjectMapper om = new ObjectMapper();
 
 	@Test
 	public void testCarDetails() throws Exception {
@@ -78,10 +81,8 @@ public class TestCarController {
 
 	@Test
 	public void testSaveMultipleCarDetails() throws Exception {
-		ObjectMapper om = new ObjectMapper();
 		List<CarRequest> carsRequest = new ArrayList<CarRequest>();
 		carsRequest.add(new CarRequest("juke", "hyb"));
-
 		List<Car> cars = new ArrayList<Car>();
 		cars.add(new Car("juke", "hyb"));
 		String carsJson = om.writeValueAsString(carsRequest);
@@ -91,6 +92,16 @@ public class TestCarController {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].name", is("juke")))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].type", is("hyb")));
+
+	}
+
+	@Test
+	public void testLoginAuthentication() throws Exception {
+		UsrDtlsRq usrDtls = new UsrDtlsRq("user", "pass");
+		String usrDtlsJsn = om.writeValueAsString(usrDtls);
+		mockMvc.perform(MockMvcRequestBuilders.post("/car/userlogin").contentType(MediaType.APPLICATION_JSON)
+				.content(usrDtlsJsn)).andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.status", is(false)));
 
 	}
 

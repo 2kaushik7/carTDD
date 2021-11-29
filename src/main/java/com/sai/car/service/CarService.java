@@ -10,13 +10,19 @@ import org.springframework.stereotype.Service;
 import com.sai.car.exceptions.CarNotFoundException;
 import com.sai.car.model.Car;
 import com.sai.car.model.CarRequest;
+import com.sai.car.model.User;
+import com.sai.car.model.UsrDtlsRq;
 import com.sai.car.repository.CarRepository;
+import com.sai.car.repository.UserRepository;
 
 @Service
 public class CarService {
 
 	@Autowired
 	CarRepository carRepository;
+
+	@Autowired
+	UserRepository userRepository;
 
 	public Car getCarDetails(String name) {
 		Optional<Car> carOption = carRepository.findByName(name);
@@ -80,6 +86,13 @@ public class CarService {
 			return carsOption.get();
 		else
 			throw new CarNotAddedException();
+	}
+
+	public Object userAuth(UsrDtlsRq usrDtlrq) {
+
+		Optional<User> user = userRepository.findByName(usrDtlrq.getUser());
+		return user.isPresent() && user.get().getName().equals(usrDtlrq.getUser())
+				&& user.get().getPassword().equals(usrDtlrq.getPassword());
 	}
 
 }

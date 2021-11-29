@@ -21,13 +21,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.sai.car.exceptions.CarNotFoundException;
 import com.sai.car.model.Car;
 import com.sai.car.model.CarRequest;
+import com.sai.car.model.User;
+import com.sai.car.model.UsrDtlsRq;
 import com.sai.car.repository.CarRepository;
+import com.sai.car.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class TestCarService {
 
 	@Mock
 	CarRepository carRepository;
+
+	@Mock
+	UserRepository userRepository;
 
 	@InjectMocks
 	CarService carService;
@@ -93,8 +99,8 @@ public class TestCarService {
 		List<CarRequest> carsRequest = new ArrayList<CarRequest>();
 		List<Car> savedcarDetails = new ArrayList<Car>();
 		savedcarDetails.add(new Car("juke", "hyb"));
-		Optional<List<Car>> carOption = Optional.of(savedcarDetails);
-		Mockito.when(carRepository.addMultipleCarsDetails(anyList())).thenReturn(carOption);
+		// Optional<List<Car>> carOption = Optional.of(savedcarDetails);
+		Mockito.when(carRepository.saveAll(anyList())).thenReturn(savedcarDetails);
 
 		List<Car> cars = carService.addCars(carsRequest);
 		assertEquals(false, cars.isEmpty());
@@ -104,9 +110,15 @@ public class TestCarService {
 	@Test
 	public void testCarService_addCarDetails_carsNotAddedException() {
 		List<CarRequest> carsRequest = new ArrayList<CarRequest>();
-		List<Car> cars = new ArrayList<Car>();
-		Mockito.when(carRepository.addMultipleCarsDetails(anyList())).thenReturn(Optional.of(cars));
 		assertThrows(CarNotAddedException.class, () -> carService.addCars(carsRequest));
+	}
+
+	@Test
+	public void testCarService_userAuth() {
+		UsrDtlsRq usrDtlrq = new UsrDtlsRq("test", "pass");
+		User user = new User("test", "pass");
+		Mockito.when(userRepository.findByName(usrDtlrq.getUser())).thenReturn(Optional.of(user));
+		assertEquals(true, carService.userAuth(usrDtlrq));
 	}
 
 }

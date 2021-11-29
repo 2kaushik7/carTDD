@@ -8,3 +8,9 @@ CREATE TABLE cars (
 	enginetype VARCHAR(250),
 	airbags BOOLEAN
 );
+
+CREATE TABLE IF NOT EXISTS people (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	name varchar(50) NOT NULL,
+	password varchar(50) NOT NULL
+);

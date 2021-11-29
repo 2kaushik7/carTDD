@@ -1,10 +1,6 @@
 package com.sai.car.repository;
 
-import java.util.List;
 import java.util.Optional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,14 +10,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sai.car.model.Car;
-import com.sai.car.service.CarNotAddedException;
 
 @Repository
 @Transactional
 public interface CarRepository extends JpaRepository<Car, Long> {
 
-	EntityManager entityManager = Persistence.createEntityManagerFactory("com.sai.car_persistence_configuration")
-			.createEntityManager();
+	// EntityManager entityManager =
+	// Persistence.createEntityManagerFactory("com.sai.car_persistence_configuration")
+	// .createEntityManager();
 
 	public Optional<Car> findByName(String name);
 
@@ -37,9 +33,9 @@ public interface CarRepository extends JpaRepository<Car, Long> {
 	@Query(value = "delete from cars where name=:name", nativeQuery = true)
 	public Optional<Integer> deleteCarDetails(String name);
 
-	public default Optional<List<Car>> addMultipleCarsDetails(List<Car> cars) throws CarNotAddedException {
-		cars.forEach(c -> entityManager.persist(c));
-		return Optional.of(cars);
-	}
+//	public default Optional<List<Car>> addMultipleCarsDetails(List<Car> cars) throws CarNotAddedException {
+//		cars.forEach(c -> entityManager.persist(c));
+//		return Optional.of(cars);
+//	}
 
 }
